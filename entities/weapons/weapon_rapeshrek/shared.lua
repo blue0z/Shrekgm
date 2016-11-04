@@ -3,7 +3,7 @@ SWEP.DrawWeaponInfoBox = true
 SWEP.Author			= "Ice Tea"
 SWEP.Contact		= "Steam Profile"
 SWEP.Purpose		= "Rape Dem' Bitches... or guys"
-SWEP.Instructions	= "Mouse1: Rape\nMouse2: Taunt\nHave Fun!"
+SWEP.Instructions	= "Mouse1: Rape\nMouse2: Taunt\nHave Fun! \n Modified for Shrek"
 
 SWEP.Category			= "Ice Tea"
 SWEP.Spawnable			= true
@@ -77,16 +77,16 @@ function SWEP:PrimaryAttack()
 	local tr = self.Owner:GetEyeTrace().Entity
 	if not tr:IsValid() then return end
 	if tr:IsNPC() or tr:IsPlayer() or ( tr:GetClass() == 'prop_ragdoll' ) then else return end
-	
+
 	--if ( !self:CanPrimaryAttack() ) then return end this is stupid base shit
 	if tr:GetPos():Distance( self.Owner:GetPos() ) > self.Primary.Distance then return end
-		
+
 	if SERVER then
 		self.Owner:EmitSound( self.Primary.Sound )
 	end
-	
+
 	RunConsoleCommand( self.PRIMARYPW )
-	
+
 end
 
 SWEP.NextSecondaryAttack = 0
@@ -96,13 +96,13 @@ SWEP.NextSecondaryAttack = 0
 function SWEP:SecondaryAttack()
 
 	if ( self.NextSecondaryAttack > CurTime() ) then return end
-	
+
 	self.NextSecondaryAttack = CurTime() + self.Secondary.Delay
-	
+
 	if SERVER then
 		self.Owner:EmitSound( sounds2[math.random(#sounds2)] )
 	end
-	
+
 end
 
 
@@ -112,21 +112,21 @@ end
 	This is to make sure that the entities haven't been removed
 ---------------------------------------------------------
 function SWEP:DrawWeaponSelection( x, y, wide, tall, alpha )
-	
+
 	draw.SimpleText( self.IconLetter, "CSSelectIcons", x + wide/2, y + tall*0.2, Color( 255, 210, 0, 255 ), TEXT_ALIGN_CENTER )
-	
+
 	// try to fool them into thinking they're playing a Tony Hawks game
 	draw.SimpleText( self.IconLetter, "CSSelectIcons", x + wide/2 + math.Rand(-4, 4), y + tall*0.2+ math.Rand(-14, 14), Color( 255, 210, 0, math.Rand(10, 120) ), TEXT_ALIGN_CENTER )
 	draw.SimpleText( self.IconLetter, "CSSelectIcons", x + wide/2 + math.Rand(-4, 4), y + tall*0.2+ math.Rand(-9, 9), Color( 255, 210, 0, math.Rand(10, 120) ), TEXT_ALIGN_CENTER )
-	
+
 end*/
 
 
 /*---------------------------------------------------------
 	DrawHUD
-	
+
 	Just a rough mock up showing how to draw your own crosshair.
-	
+
 ---------------------------------------------------------*/
 function SWEP:DrawHUD()
 

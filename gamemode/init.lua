@@ -32,7 +32,7 @@ function team1( ply ) -- Creating the function.
 	ply:SetModel("models/narry/shrek_playermodel_v1.mdl") -- Setting Shrek's PM
 	ply:Freeze (true)	-- Freeze the player
 	timer.Simple( 2, function() ply:Freeze(false) end )	-- Unfreeze the player after 60 seconds
-	ply:Give ("weapon_rape") -- Equip the player with a hider's gun
+	ply:Give ("weapon_rapeshrek") -- Equip the player with a hider's gun
 
 end -- End the function
 concommand.Add("shrek", team1) -- Adding a concommand (Console Command) for the team.
