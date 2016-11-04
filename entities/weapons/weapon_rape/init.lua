@@ -1,4 +1,3 @@
-	
 AddCSLuaFile( "shared.lua" )
 AddCSLuaFile( "cl_init.lua" )
 
@@ -150,7 +149,7 @@ concommand.Add( SWEP.PRIMARYPW, function( ply, cmd, args )
 
 	local plyAttacker = ply
 	local plyAttackerPos = plyAttacker:GetPos()
-	
+
 	local plyVictim = plyAttacker:GetEyeTrace().Entity
 	if !plyVictim or plyVictim == nil or !plyVictim:IsValid() then return end
 	local plyVictimHealth = plyVictim:Health()
@@ -161,9 +160,9 @@ concommand.Add( SWEP.PRIMARYPW, function( ply, cmd, args )
 	elseif plyVictim:GetClass() == "prop_ragdoll" then
 		VictimType = 3
 	end
-	
+
 	plyAttacker.Raping = true
-	
+
 	plyAttacker:StripWeapons()
 	plyAttacker:Spectate( OBS_MODE_CHASE )
 	if VictimType == 1 and plyVictim and plyVictim:IsValid() then
@@ -171,7 +170,7 @@ concommand.Add( SWEP.PRIMARYPW, function( ply, cmd, args )
 		plyVictim:Spectate( OBS_MODE_CHASE )
 		plyVictim.Raping = true
 	end
-	
+
 	local basepos = plyAttacker:GetPos() + Vector(0,0,20)
 	local traceda = {}
 	traceda.start = basepos
@@ -200,13 +199,13 @@ concommand.Add( SWEP.PRIMARYPW, function( ply, cmd, args )
 			phys:SetAngles( victimAng[i] )
 		end
 	end
-	
+
 	local ragAttacker = ents.Create("prop_ragdoll")
 	ragAttacker:SetModel( plyAttacker:GetModel() )
 	ragAttacker:SetPos( plyVictimPos )
 	ragAttacker:Spawn()
 	ragAttacker:Activate()
-	
+
 	for i = 1, 14 do
 		local phys = ragAttacker:GetPhysicsObjectNum(i)
 		if phys and phys:IsValid() then
@@ -224,9 +223,9 @@ concommand.Add( SWEP.PRIMARYPW, function( ply, cmd, args )
 	elseif VictimType == 2 then
 		plyVictim:SetPos( plyVictimPos + Vector(5000,5000,0) )
 	elseif VictimType == 3 then
-		
+
 	end
-	
+
 	local thrustTimerString = "RapeThrust"..math.random(1337)
 	local phys = ragAttacker:GetPhysicsObjectNum( 11 )
 	if phys and phys:IsValid() then
@@ -238,15 +237,15 @@ concommand.Add( SWEP.PRIMARYPW, function( ply, cmd, args )
 			end
 		end )
 	end
-	
-	
+
+
 	local soundTimerString = "EmitRapeSounds"..math.random(1337)
 	timer.Create( soundTimerString, SoundDelay, 0, function()
 		ragVictim:EmitSound( sounds[math.random(#sounds)] )
 	end )
-	
+
 	timer.Simple( RapeLength, function()
-	
+
 		if plyAttacker and plyAttacker:IsValid() then
 			plyAttacker:UnSpectate()
 			plyAttacker:Spawn()
@@ -256,13 +255,9 @@ concommand.Add( SWEP.PRIMARYPW, function( ply, cmd, args )
 		end
 		if plyVictim and plyVictim:IsValid() then
 			if VictimType == 1 then
-				plyVictim:UnSpectate()
-				plyVictim:Spawn()
-				plyVictim:SetPos( plyVictimPos )
-				plyVictim:SetHealth( plyVictimHealth / 2 )
-				plyVictim.Raping = false
+				plyVictim:Kill()
 			elseif VictimType == 2 then
-				plyVictim:SetPos( plyVictimPos )
+				plyVictim:Kill()
 			elseif VictimType == 3 then
 				for i = 1, 14 do
 					local phys = ragVictim:GetPhysicsObjectNum(i)
@@ -272,13 +267,13 @@ concommand.Add( SWEP.PRIMARYPW, function( ply, cmd, args )
 				end
 			end
 		end
-		
+
 		SafeRemoveEntity( ragAttacker )
 		if VictimType != 3 then SafeRemoveEntity( ragVictim ) end
-		
+
 		timer.Destroy( soundTimerString )
 		timer.Destroy( thrustTimerString )
-	
+
 	end )
 
 end )
@@ -301,15 +296,15 @@ local v = Ragdolls[1]
 
 	print(v:GetModel())
 	local basepos = Vector( -662, 432.5, -11135.5 )
-		
+
 	for i = 1, v:GetPhysicsObjectCount() do
 		local phys = v:GetPhysicsObjectNum(i)
 		if phys and phys:IsValid() then
-			
+
 			local pos = phys:GetPos()
 			pos:Sub( basepos )
 			local ang = phys:GetAngles()
-			
+
 			print("Vector( "..pos.x..", "..pos.y..", "..pos.z.." )," )
 			timer.Simple(0.2, function() print("Angle( "..ang.p..", "..ang.y..", "..ang.r.." )," ) end )
 		end
