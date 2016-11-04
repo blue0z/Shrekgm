@@ -1,0 +1,11 @@
+"shrek"
+{
+	"base"		"base"
+	"title"		"Shrek"
+	"maps"		"^sh_"
+	"menusystem"	"1"
+	"workshopid"	""
+
+	"settings"
+	{
+}

@@ -1,0 +1,19 @@
+"Gamemode"
+ {
+ 	"name"		"Shrek"
+ 	"version"	"0.1" 
+ 	"up_date"	"13/07/2016" // The date this version was published. Set before release!
+ 
+ 	"author_name"	"Blue0z"
+ 	"author_email"	"Blue0z@hotmail.co.uk"
+ 	"author_url"	"www.noahstride.com"
+ 
+ 	"info"		"Sherk."
+ 	"icon" 	 	"" // Icon to show in the Mods list inside Garry's Mod
+ 	"hide"		"0" // Do not hide this gamemode from the Mods list inside Garry's Mod
+ 
+	"mappattern" // This sets all maps with gt_ before the name to default the map gamemode to "GM_test"
+	{
+		"1"	"^gt_"
+	}
+  }

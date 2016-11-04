@@ -1,0 +1,6 @@
+"shrek"
+{
+	"base"		"base"
+	"title"		"Shrek"
+	"menusystem"	"1"
+}
