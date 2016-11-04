@@ -64,7 +64,7 @@ function Round.Handle() --This function runs every second
 
 end
 
-function Round.Start() --This runs at the start of each round
+function Round.Start() --This runs at the start of each roundffdd
 	Round.CurrentTime = Round.DefaultTime
 	SetGlobalInt("TimeLeft", Round.CurrentTime)
 
