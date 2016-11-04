@@ -86,7 +86,7 @@ function Round.Start() --This runs at the stadrt of deach roundffdd
 	end
 
 	for k, v in pairs( player.GetAll() ) do
-		if v != Shrek then
+		if v != Round.Shrek then
 			team0(v) --Spawn them as a runner
 		end
 		v:StopSound("smash")
