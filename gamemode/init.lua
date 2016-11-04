@@ -29,7 +29,6 @@ function team0( ply ) -- Creating the function.
 	ply:SetPlayerColor( Vector(0.22, 0.5, 0.10) )
 
 end -- End the function
-concommand.Add("runner", team0) -- Adding a concommand (Console Command) for the team.
 
 
 function team1( ply ) -- Creating the function.
@@ -40,14 +39,12 @@ function team1( ply ) -- Creating the function.
 	ply:SetPlayerColor( Vector(0.22, 0.5, 0.10) )
 	ply:Freeze (true)	-- Freeze the player
 	timer.Simple( 2, function() ply:Freeze(false) end )	-- Unfreeze the player after 60 seconds
-	ply:Give ("weapon_rape") -- Equip the player with a hider's gun
-
+	ply:Give ("weapon_rapes") -- Equip the player with a hider's gun
 end -- End the function
-concommand.Add("shrek", team1) -- Adding a concommand (Console Command) for the team.
 
 -- Round System
 Round = {}
-Round.DefaultTime = 10
+Round.DefaultTime = 60
 Round.CurrentTime = 0
 Round.ShrekCount = 1
 
@@ -59,7 +56,7 @@ function Round.Handle() --This function runs every second
 
 	if Round.CurrentTime <= 0 then --If its ended
 		Round.Start() --Start the next round
-	else --Else do any stuff we want to run each second during gameplay.
+	else --Else do any stuff we want to run each second during gameplay. xd
 		for k, v in pairs( player.GetAll() ) do
 			v:ChatPrint("Round Time Remaining: "..Round.CurrentTime)
 		end
@@ -70,6 +67,10 @@ end
 function Round.Start() --This runs at the start of each round
 	Round.CurrentTime = Round.DefaultTime
 	SetGlobalInt("TimeLeft", Round.CurrentTime)
+
+	for k, v in pairs( player.GetAll() ) do
+		v:KillSilent()
+	end
 
 	local Shrek = table.Random(player.GetAll()) --Pick shrek
 	team1(Shrek) --Make random player shrek
@@ -86,3 +87,10 @@ function Round.Start() --This runs at the start of each round
 end
 
 timer.Create("Round.Handle", 1, 0, Round.Handle)
+
+-- Cause instant Kill
+function GM:EntityTakeDamage(ply, dmginfo)
+	if dmginfo:GetDamageType() != DMG_FALL then
+		dmginfo:SetDamage(0)
+	end
+end
