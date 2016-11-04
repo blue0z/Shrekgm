@@ -7,6 +7,8 @@ include( "player.lua" )
 resource.AddWorkshop( "314261589" ) -- Shrek Model
 resource.AddWorkshop( "104910430" ) -- Rape Swep
 
+resource.AddFile("sound/smash.mp3") --smash
+
 function GM:PlayerInitialSpawn( ply )
 	ply:SetTeam(0) --Set Team to Players
 end
@@ -84,6 +86,8 @@ function Round.Start() --This runs at the start of each roundffdd
 			team0(v) --Spawn them as a runner
 		end
 	end
+
+	Shrek:EmitSound("sound/smash.mp3")
 end
 
 timer.Create("Round.Handle", 1, 0, Round.Handle)
