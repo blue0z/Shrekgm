@@ -36,7 +36,7 @@ function team1( ply ) -- Creating the function.
 	ply:SetTeam( 1 ) -- We'll set him to team 1
 	ply:Spawn() -- Let's spawn him.
 	ply:SetModel("models/player/pyroteknik/shrek.mdl") -- Setting Shrek's PM
-	ply:SetPlayerColor( Color(57, 133, 27) )
+	ply:SetPlayerColor( Vector(57, 133, 27) )
 	ply:Freeze (true)	-- Freeze the player
 	timer.Simple( 2, function() ply:Freeze(false) end )	-- Unfreeze the player after 60 seconds
 	ply:Give ("weapon_rape") -- Equip the player with a hider's gun
