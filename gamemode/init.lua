@@ -8,6 +8,10 @@ resource.AddWorkshop( "314261589" ) -- Shrek Model
 resource.AddWorkshop( "104910430" ) -- Rape Swep
 
 resource.AddFile("sound/smash.mp3") --smash
+sound.Add({
+	name = "smash",
+	sound = "smash.mp3"
+})
 
 function GM:PlayerInitialSpawn( ply )
 	ply:SetTeam(0) --Set Team to Players
@@ -24,7 +28,7 @@ function GM:PlayerSpawn( ply )
 end
 
 function team0( ply ) -- Creating the function.
-	ply:UnSpectate() -- As soon as the person joins the team, he get's Un-spectated
+	ply:UnSpectate() -- As soon as the person joins the team, hde get's Un-spectated
 	ply:SetTeam( 0 ) -- We'll set him to team 0
 	ply:Spawn() -- Let's spawn him.
 	ply:SetModel("models/player/group01/male_07.mdl") -- Setting the Hider's PM
@@ -66,7 +70,7 @@ function Round.Handle() --This function runs every second
 
 end
 
-function Round.Start() --This runs at the start of each roundffdd
+function Round.Start() --This runs at the stadrt of deach roundffdd
 	Round.CurrentTime = Round.DefaultTime
 	SetGlobalInt("TimeLeft", Round.CurrentTime)
 
@@ -74,20 +78,21 @@ function Round.Start() --This runs at the start of each roundffdd
 		v:KillSilent()
 	end
 
-	local Shrek = table.Random(player.GetAll()) --Pick shrek
-	team1(Shrek) --Make random player shrek
+	Round.Shrek = table.Random(player.GetAll()) --Pick shrek
+	team1(Round.Shrek) --Make random player shrek
 
 	for k, v in pairs( player.GetAll() ) do
-		v:ChatPrint("The new shrek is: "..Shrek:Nick())
+		v:ChatPrint("The new shrek is: "..Round.Shrek:Nick())
 	end
 
 	for k, v in pairs( player.GetAll() ) do
 		if v != Shrek then
 			team0(v) --Spawn them as a runner
 		end
+		v:StopSound("smash")
 	end
 
-	Shrek:EmitSound("sound/smash.mp3")
+	Round.Shrek:EmitSound("smash")
 end
 
 timer.Create("Round.Handle", 1, 0, Round.Handle)
