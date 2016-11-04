@@ -75,7 +75,7 @@ function Round.Start() --This runs at the start of each round
 	team1(Shrek) --Make random player shrek
 
 	for k, v in pairs( player.GetAll() ) do
-		v:ChatPrint("The new shrek is: "..Shrek.Nick())
+		v:ChatPrint("The new shrek is: "..Shrek:Nick())
 	end
 
 	for k, v in pairs( player.GetAll() ) do
