@@ -16,7 +16,7 @@ SWEP.Primary.Recoil			= 0
 SWEP.Primary.Damage			= 0
 SWEP.Primary.NumShots		= -1
 SWEP.Primary.Delay			= 3
-SWEP.Primary.Distance		= 75
+SWEP.Primary.Distance		= 150
 
 SWEP.Primary.ClipSize		= -1
 SWEP.Primary.DefaultClip	= -1

@@ -20,11 +20,14 @@ sound.Add({
 })
 
 function GM:PlayerInitialSpawn( ply )
-	ply:SetTeam(0) --Set Team to Players
+	team0() --Set Team to Players
 end
 
 function GM:PlayerDeath( ply )
 	ply:SetTeam(2) --Set Team to Spectators
+	if 0 >= #team.GetPlayers( 0 ) then --If all the runners are dead. End the round!
+		Round.Start()
+	end
 end
 
 function GM:PlayerSpawn( ply )
@@ -66,7 +69,7 @@ function Round.Handle() --This function runs every second
 	Round.CurrentTime = Round.CurrentTime - 1
 	SetGlobalInt("TimeLeft", Round.CurrentTime)
 
-	if Round.CurrentTime <= 0 then --If its ended
+	if Round.CurrentTime <= 0 and #player.GetAll() > 0 then --If its ended
 		Round.Start() --Start the next round
 	else --Else do any stuff we want to run each second during gameplay. xd
 		for k, v in pairs( player.GetAll() ) do
@@ -77,12 +80,15 @@ function Round.Handle() --This function runs every second
 end
 
 function Round.Start() --This runs at the stadrt of deach roundffdd
-	Round.CurrentTime = Round.DefaultTime
-	SetGlobalInt("TimeLeft", Round.CurrentTime)
-
+	-- Round End
 	for k, v in pairs( player.GetAll() ) do
 		v:KillSilent()
+		v:StopSound("smash")
 	end
+
+	-- Round Start
+	Round.CurrentTime = Round.DefaultTime
+	SetGlobalInt("TimeLeft", Round.CurrentTime)
 
 	Round.Shrek = table.Random(player.GetAll()) --Pick shrek
 	team1(Round.Shrek) --Make random player shrek
@@ -95,7 +101,6 @@ function Round.Start() --This runs at the stadrt of deach roundffdd
 		if v != Round.Shrek then
 			team0(v) --Spawn them as a runner
 		end
-		v:StopSound("smash")
 	end
 
 	Round.Shrek:EmitSound("smash")
