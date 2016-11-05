@@ -41,7 +41,7 @@ SWEP.SoundDelay = 1.5
 
 
 local sounds2 = {
-	"bot/where_are_you_hiding.wav",
+	"swamp.mp3",
 }
 
 

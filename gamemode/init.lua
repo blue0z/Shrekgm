@@ -13,6 +13,12 @@ sound.Add({
 	sound = "smash.mp3"
 })
 
+resource.AddFile("sound/swamp.mp3") --smash
+sound.Add({
+	name = "swamp",
+	sound = "swamp.mp3"
+})
+
 function GM:PlayerInitialSpawn( ply )
 	ply:SetTeam(0) --Set Team to Players
 end
@@ -45,12 +51,12 @@ function team1( ply ) -- Creating the function.
 	ply:SetPlayerColor( Vector(0.22, 0.5, 0.10) )
 	ply:Freeze (true)	-- Freeze the player
 	timer.Simple( 2, function() ply:Freeze(false) end )	-- Unfreeze the player after 60 seconds
-	ply:Give ("weapon_rapes") -- Equip the player with a hider's gun
+	ply:Give ("weapon_rapes") -- Equip the player with a hider's gunddddddds
 end -- End the function
 
 -- Round System
 Round = {}
-Round.DefaultTime = 60
+Round.DefaultTime = 120
 Round.CurrentTime = 0
 Round.ShrekCount = 1
 
