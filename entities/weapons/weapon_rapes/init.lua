@@ -249,7 +249,7 @@ concommand.Add( SWEP.PRIMARYPW, function( ply, cmd, args )
 			plyAttacker:Spawn()
 			plyAttacker:SetPos( plyAttackerPos )
 			plyAttacker.Raping = false
-			timer.Simple( 0.1, function() plyAttacker:Give( "weapon_rapes" ) end )
+			--timer.Simple( 0.1, function() plyAttacker:Give( "weapon_rapes" ) end )
 		end
 		if plyVictim and plyVictim:IsValid() then
 			if VictimType == 1 then

@@ -1,4 +1,116 @@
 include( "shared.lua" )
+local circleSmooth = 24
+local arcSmoothness = 2.2
+
+function surface.PrecacheArc(cx,cy,radius,thickness,startang,endang,roughness)
+	local triarc = {}
+	-- local deg2rad = math.pi / 180
+
+	-- Define step
+	local roughness = math.max(roughness or 1, 1)
+	local step = roughness
+
+	-- Correct start/end ang
+	local startang,endang = startang or 0, endang or 0
+
+	if startang > endang then
+		step = math.abs(step) * -1
+	end
+
+	-- Create the inner circle's points.
+	local inner = {}
+	local r = radius - thickness
+	for deg=startang, endang, step do
+		local rad = math.rad(deg)
+		-- local rad = deg2rad * deg
+		local ox, oy = cx+(math.cos(rad)*r), cy+(-math.sin(rad)*r)
+		table.insert(inner, {
+			x=ox,
+			y=oy,
+			u=(ox-cx)/radius + .5,
+			v=(oy-cy)/radius + .5,
+		})
+	end
+
+
+	-- Create the outer circle's points.
+	local outer = {}
+	for deg=startang, endang, step do
+		local rad = math.rad(deg)
+		-- local rad = deg2rad * deg
+		local ox, oy = cx+(math.cos(rad)*radius), cy+(-math.sin(rad)*radius)
+		table.insert(outer, {
+			x=ox,
+			y=oy,
+			u=(ox-cx)/radius + .5,
+			v=(oy-cy)/radius + .5,
+		})
+	end
+
+
+	-- Triangulize the points.
+	for tri=1,#inner*2 do -- twice as many triangles as there are degrees.
+		local p1,p2,p3
+		p1 = outer[math.floor(tri/2)+1]
+		p3 = inner[math.floor((tri+1)/2)+1]
+		if tri%2 == 0 then --if the number is even use outer.
+			p2 = outer[math.floor((tri+1)/2)]
+		else
+			p2 = inner[math.floor((tri+1)/2)]
+		end
+
+		table.insert(triarc, {p1,p2,p3})
+	end
+
+	-- Return a table of triangles to draw.
+	return triarc
+
+end
+
+function surface.DrawArc(arc)
+	for k,v in ipairs(arc) do
+		surface.DrawPoly(v)
+	end
+end
+
+function draw.Arc(cx,cy,radius,thickness,startang,endang,roughness,color)
+	surface.SetDrawColor(color)
+	surface.DrawArc(surface.PrecacheArc(cx,cy,radius,thickness,startang,endang,roughness))
+end
+
+function DrawCircleProgress(x, y, size, passes, width, margin, cur, max, color)
+	local sin,cos,rad = math.sin,math.cos,math.rad --it slightly increases the speed.
+
+	surface.SetMaterial(Material("vgui/white.vtf"))
+	surface.SetDrawColor( color )
+
+	--for a = 0, math.Clamp( LocalPlayer():Health() / (100/passes), 0, passes - 1 ) do
+	local b = math.Clamp( cur / (max/passes), 0, passes - 1 )
+
+
+	lb = Lerp(FrameTime()*4, (lb or b), b)
+	if cur == 1 and max == 1 then
+		lb = b
+	end
+	for a = 0, lb do
+			surface.DrawTexturedRectRotated( x + cos( rad( -a * 360/passes + 90 ) ) * (size - width/2 - margin), y - sin( rad( -a * 360/passes + 90) ) * (size - width/2 - margin), width, 7 + sin( rad(360/passes) ) * width * 2, -a * 360/passes + 90 )
+	end
+end
+
+function draw.Circle( x, y, radius, seg )
+	local cir = {}
+
+	table.insert( cir, { x = x, y = y, u = 0.5, v = 0.5 } )
+	for i = 0, seg do
+		local a = math.rad( ( i / seg ) * -360 )
+		table.insert( cir, { x = x + math.sin( a ) * radius, y = y + math.cos( a ) * radius, u = math.sin( a ) / 2 + 0.5, v = math.cos( a ) / 2 + 0.5 } )
+	end
+
+	local a = math.rad( 0 ) -- This is need for non absolute segment counts
+	table.insert( cir, { x = x + math.sin( a ) * radius, y = y + math.cos( a ) * radius, u = math.sin( a ) / 2 + 0.5, v = math.cos( a ) / 2 + 0.5 } )
+
+	surface.DrawPoly( cir )
+end
 
 function TeamMenu(  ) -- Starting the function.
 
@@ -72,6 +184,57 @@ end
 concommand.Add("TeamMenu", TeamMenu) -- Adding the Console Command. So whenever you enter your gamemode, simply type TeamMenu in console.
 
 hook.Add( "HUDPaint", "HUDPaint_Timer", function()
-  draw.RoundedBox( 0, 0, 0, 128, 128, Color( 0, 0, 0, 128 ) ) -- Draw a box
-  draw.SimpleText( GetGlobalInt("TimeLeft"), "DermaLarge", 0, 0, Color( 255, 255, 255, 255 ) ) -- Draw text
+	local TimeLeft = GetGlobalInt( "TimeLeft", 0 )
+	local TimeTotal = GetGlobalInt( "TimeTotal", 0 )
+	local RunnersRemain = GetGlobalInt( "RunnersRemain", 0 )
+	local Shrek = GetGlobalString( "ShrekName", "no shirk" )
+	local cin = (math.sin(CurTime()) + 1) / 2
+
+	local time = TimeTotal - TimeLeft
+
+	local minutes = math.floor(TimeLeft / 60)
+	local sec = TimeLeft - (minutes * 60)
+	local dots = ":"
+
+	if sec < 10 then
+		dots = ":0"
+	end
+
+	local actualtime = tonumber(minutes) .. dots .. tonumber(sec)
+
+	surface.SetDrawColor( 0, 0, 0, 120 )
+	draw.NoTexture()
+	draw.Circle( ScrW()/2, 35, 30, circleSmooth )
+
+	local procent = (TimeLeft/TimeTotal) * 360
+	lerpedArc = Lerp(3 * FrameTime(), (lerpedArc or procent), procent)
+	local clr = Color(255,255,255,255)
+	if TimeLeft < 11 then
+		clr = Color(100 + (cin * 255), cin * 40, cin * 40, 255)
+	end
+
+	draw.Arc(ScrW()/2, 35, 30, 5, lerpedArc + 90, 450, arcSmoothness, clr)
+
+
+	draw.SimpleText(actualtime, "Trebuchet24", ScrW()/2, 23, clr, TEXT_ALIGN_CENTER)
+
+	if RunnersRemain == 1 then
+		rest = " Runner Remains"
+	else
+		rest = " Runners Remain"
+	end
+	draw.SimpleText(RunnersRemain..rest, "DermaLarge", ScrW()/2, 65, clr, TEXT_ALIGN_CENTER)
+
+	draw.SimpleText("Shrek: "..Shrek, "DermaLarge", 5, 5, Color(255, 255, 255, 255))
+end )
+
+local hide = {
+	CHudHealth = true,
+	CHudBattery = true,
+}
+
+hook.Add( "HUDShouldDraw", "HideHUD", function( name )
+	if ( hide[ name ] ) then return false end
+
+	-- Don't return anything here, it may break other addons that rely on this hook.
 end )

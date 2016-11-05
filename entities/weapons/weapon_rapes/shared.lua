@@ -1,6 +1,6 @@
 
 SWEP.DrawWeaponInfoBox = true
-SWEP.Author			= "Ice Tea"
+SWEP.Author			= "Ice Tea & Strideynet"
 SWEP.Contact		= "Steam Profile"
 SWEP.Purpose		= "Shrek some kids"
 SWEP.Instructions	= "Mouse1: Rape\nMouse2: Taunt\nHave Fun!"
