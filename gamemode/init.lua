@@ -20,7 +20,7 @@ sound.Add({
 })
 
 function GM:PlayerInitialSpawn( ply )
-	team0() --Set Team to Players
+	ply:SetTeam(0)--Set Team to Players
 end
 
 function GM:PlayerDeath( ply )
@@ -33,29 +33,19 @@ end
 function GM:PlayerSpawn( ply )
 	if ply:Team() == 2 then --If spectator
 		ply:Spectate(5) --Make them spectate
+	elseif ply:Team() == 0 then
+		ply:UnSpectate() -- As soon as the person joins the team, hde get's Un-spectated
+		ply:SetModel("models/player/group01/male_07.mdl") -- Setting the Hider's PM
+		ply:SetPlayerColor( Vector(0.22, 0.5, 0.10) )
+	elseif ply:Team() == 1 then
+		ply:UnSpectate() -- As soon as the person joins the team, he get's Un-spectated
+		ply:SetModel("models/player/pyroteknik/shrek.mdl") -- Setting Shrek's PM
+		ply:SetPlayerColor( Vector(0.22, 0.5, 0.10) )
+		ply:Freeze (true)	-- Freeze the player
+		timer.Simple( 2, function() ply:Freeze(false) end )	-- Unfreeze the player after 60 seconds
+		ply:Give ("weapon_rapes") -- Equip the player with a hider's gunddddddds
 	end
 end
-
-function team0( ply ) -- Creating the function.
-	ply:UnSpectate() -- As soon as the person joins the team, hde get's Un-spectated
-	ply:SetTeam( 0 ) -- We'll set him to team 0
-	ply:Spawn() -- Let's spawn him.
-	ply:SetModel("models/player/group01/male_07.mdl") -- Setting the Hider's PM
-	ply:SetPlayerColor( Vector(0.22, 0.5, 0.10) )
-
-end -- End the function
-
-
-function team1( ply ) -- Creating the function.
-	ply:UnSpectate() -- As soon as the person joins the team, he get's Un-spectated
-	ply:SetTeam( 1 ) -- We'll set him to team 1
-	ply:Spawn() -- Let's spawn him.
-	ply:SetModel("models/player/pyroteknik/shrek.mdl") -- Setting Shrek's PM
-	ply:SetPlayerColor( Vector(0.22, 0.5, 0.10) )
-	ply:Freeze (true)	-- Freeze the player
-	timer.Simple( 2, function() ply:Freeze(false) end )	-- Unfreeze the player after 60 seconds
-	ply:Give ("weapon_rapes") -- Equip the player with a hider's gunddddddds
-end -- End the function
 
 -- Round System
 Round = {}
@@ -81,17 +71,13 @@ end
 
 function Round.Start() --This runs at the stadrt of deach roundffdd
 	-- Round End
-	for k, v in pairs( player.GetAll() ) do
-		v:KillSilent()
-		v:StopSound("smash")
-	end
 
 	-- Round Start
 	Round.CurrentTime = Round.DefaultTime
 	SetGlobalInt("TimeLeft", Round.CurrentTime)
 
 	Round.Shrek = table.Random(player.GetAll()) --Pick shrek
-	team1(Round.Shrek) --Make random player shrek
+	Round.Shrek:SetTeam(1) --Make random player shrek
 
 	for k, v in pairs( player.GetAll() ) do
 		v:ChatPrint("The new shrek is: "..Round.Shrek:Nick())
@@ -99,8 +85,14 @@ function Round.Start() --This runs at the stadrt of deach roundffdd
 
 	for k, v in pairs( player.GetAll() ) do
 		if v != Round.Shrek then
-			team0(v) --Spawn them as a runner
+			v:SetTeam(0) --Spawn them as a runner
 		end
+	end
+
+	for k, v in pairs( player.GetAll() ) do
+		v:KillSilent()
+		v:Spawn()
+		v:StopSound("smash")
 	end
 
 	Round.Shrek:EmitSound("smash")
