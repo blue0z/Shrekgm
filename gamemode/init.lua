@@ -13,6 +13,12 @@ sound.Add({
 	sound = "smash.mp3"
 })
 
+resource.AddFile("sound/bonus.mp3") --smash
+sound.Add({
+	name = "bonus",
+	sound = "bonus.mp3"
+})
+
 resource.AddFile("sound/swamp.mp3") --smash
 sound.Add({
 	name = "swamp",
@@ -103,11 +109,20 @@ function Round.Start() --This runs at the stadrt of deach roundffdd
 	for k, v in pairs( player.GetAll() ) do
 		v:KillSilent()
 		v:StopSound("smash")
+		v:StopSound("bonus")
 	end
 	timer.Simple( 0.1, function()
 		Round.Shrek:Freeze(true)
 	end)
-	Round.Shrek:EmitSound("smash")
+	
+	song = math.random (0,5) --calls random int between 0 and 5 inclusive.
+	
+	if song == 0 then
+		Round.Shrek:EmitSound("bonus") --play secret song
+
+	else
+		Round.Shrek:EmitSound("smash") --play default song
+	end
 end
 
 timer.Create("Round.Handle", 1, 0, Round.Handle)
