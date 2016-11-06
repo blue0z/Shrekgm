@@ -62,10 +62,10 @@ end
 
 -- Round System
 Round = {}
-Round.DefaultTime = 120
+Round.DefaultTime = 180
 Round.CurrentTime = 0
 Round.ShrekCount = 1
-Round.ShrekRelease = 114
+Round.ShrekRelease = 174
 
 SetGlobalInt("TimeLeft", Round.CurrentTime)
 SetGlobalInt("TimeTotal", Round.DefaultTime)
@@ -88,7 +88,7 @@ end
 
 function Round.Start() --This runs at the stadrt of deach roundffdd
 	-- Round End
-
+	game.CleanUpMap()
 	-- Round Start
 	Round.CurrentTime = Round.DefaultTime
 	SetGlobalInt("TimeLeft", Round.CurrentTime)
@@ -114,9 +114,9 @@ function Round.Start() --This runs at the stadrt of deach roundffdd
 	timer.Simple( 0.1, function()
 		Round.Shrek:Freeze(true)
 	end)
-	
+
 	song = math.random (0,5) --calls random int between 0 and 5 inclusive.
-	
+
 	if song == 0 then
 		Round.Shrek:EmitSound("bonus") --play secret song
 
@@ -133,3 +133,13 @@ function GM:EntityTakeDamage(ply, dmginfo)
 		dmginfo:SetDamage(0)
 	end
 end
+
+hook.Add( "PlayerSay", "Glitched", function( ply, text, public )
+	text = string.lower( text ) -- Make the chat message entirely lowercase
+	if ( text == "!unstuck" or text =="!stuck" or text =="!unglitch" ) then
+		ply:ChatPrint("You will be spawned in 1 second!")
+		timer.Simple( 1, function()
+			ply:Spawn()
+		end)
+	end
+end )

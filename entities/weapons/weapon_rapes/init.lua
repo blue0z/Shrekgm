@@ -167,6 +167,12 @@ concommand.Add( SWEP.PRIMARYPW, function( ply, cmd, args )
 		plyVictim:StripWeapons()
 		plyVictim:Spectate( OBS_MODE_CHASE )
 		plyVictim.Raping = true
+	else
+		plyAttacker:UnSpectate()
+		plyAttacker:Spawn()
+		plyAttacker:SetPos( plyAttackerPos )
+		plyAttacker.Raping = false
+		return
 	end
 
 	local basepos = plyAttacker:GetPos() + Vector(0,0,20)

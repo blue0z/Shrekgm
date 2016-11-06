@@ -226,6 +226,7 @@ hook.Add( "HUDPaint", "HUDPaint_Timer", function()
 	draw.SimpleText(RunnersRemain..rest, "DermaLarge", ScrW()/2, 65, clr, TEXT_ALIGN_CENTER)
 
 	draw.SimpleText("Shrek: "..Shrek, "DermaLarge", 5, 5, Color(255, 255, 255, 255))
+	draw.SimpleText("If you get stuck/glitched or Shrek dies, run !unstuck.", "Trebuchet24", 5, ScrH()-28, Color(255, 255, 255, 255))
 end )
 
 local hide = {
