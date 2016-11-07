@@ -163,7 +163,7 @@ concommand.Add( SWEP.PRIMARYPW, function( ply, cmd, args )
 
 	plyAttacker:StripWeapons()
 	plyAttacker:Spectate( OBS_MODE_CHASE )
-	if VictimType == 1 and plyVictim and plyVictim:IsValid() then
+	if VictimType == 1 and plyVictim and plyVictim:IsValid() and plyVictim.StripWeapons then
 		plyVictim:StripWeapons()
 		plyVictim:Spectate( OBS_MODE_CHASE )
 		plyVictim.Raping = true
