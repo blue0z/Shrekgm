@@ -6,7 +6,7 @@ include( "player.lua" )
 
 resource.AddWorkshop( "314261589" ) -- Shrek Model
 resource.AddWorkshop( "104910430" ) -- Rape Swep
-
+resource.AddWorkshop( "795585981" ) -- All other content
 sound.Add({
 	name = "smash",
 	sound = "smash.mp3"
