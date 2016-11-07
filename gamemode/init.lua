@@ -6,20 +6,17 @@ include( "player.lua" )
 
 resource.AddWorkshop( "314261589" ) -- Shrek Model
 resource.AddWorkshop( "104910430" ) -- Rape Swep
-
-resource.AddFile("sound/smash.mp3") --smash
+resource.AddWorkshop( "795585981" ) -- All other content
 sound.Add({
 	name = "smash",
 	sound = "smash.mp3"
 })
 
-resource.AddFile("sound/bonus.mp3") --smash
 sound.Add({
 	name = "bonus",
 	sound = "bonus.mp3"
 })
 
-resource.AddFile("sound/swamp.mp3") --smash
 sound.Add({
 	name = "swamp",
 	sound = "swamp.mp3"
@@ -30,11 +27,13 @@ function GM:PlayerInitialSpawn( ply )
 end
 
 function GM:PlayerDeath( ply )
-	if ply:Team() != 1 then
+	if ply:Team() == 0 then
 		ply:SetTeam(2) --Set Team to Spectators
 		if 0 >= #team.GetPlayers( 0 ) then --If all the runners are dead. End the round!
-			Round.Start()
+			return Round.Start()
 		end
+
+		Round.CurrentTime = Round.CurrentTime + Round.TimePerVictim
 	end
 end
 
@@ -66,6 +65,7 @@ Round.DefaultTime = 180
 Round.CurrentTime = 0
 Round.ShrekCount = 1
 Round.ShrekRelease = 174
+Round.TimePerVictim = 30
 
 SetGlobalInt("TimeLeft", Round.CurrentTime)
 SetGlobalInt("TimeTotal", Round.DefaultTime)
