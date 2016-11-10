@@ -33,9 +33,9 @@ function GM:PlayerDeath( ply )
 			return Round.Start()
 		end
 
-		Round.CurrentTime = Round.CurrentTime + Round.TimePerVictim
+		Round.CurrentTime = math.min(Round.CurrentTime + Round.TimePerVictim, Round.DefaultTime)
 		SetGlobalInt("TimeLeft", Round.CurrentTime)
-		SetGlobalInt("TimeTotal", Round.CurrentTime)
+			--SetGlobalInt("TimeTotal", Round.CurrentTime)
 	end
 end
 
