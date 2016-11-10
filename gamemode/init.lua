@@ -34,6 +34,7 @@ function GM:PlayerDeath( ply )
 		end
 
 		Round.CurrentTime = Round.CurrentTime + Round.TimePerVictim
+		SetGlobalInt("TimeLeft", Round.CurrentTime)
 	end
 end
 
