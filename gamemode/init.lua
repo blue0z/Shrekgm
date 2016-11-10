@@ -35,11 +35,18 @@ function GM:PlayerDeath( ply )
 
 		Round.CurrentTime = Round.CurrentTime + Round.TimePerVictim
 		SetGlobalInt("TimeLeft", Round.CurrentTime)
+		SetGlobalInt("TimeTotal", Round.CurrentTime)
 	end
 end
 
 function GM:PlayerDeathThink( ply )
 	ply:Spawn()
+end
+
+function GM:PlayerDisconnected( ply)
+	if ply == Round.Shrek then
+		Round.Start()
+	end
 end
 
 function GM:PlayerSpawn( ply )
@@ -88,6 +95,7 @@ function Round.Handle() --This function runs every second
 end
 
 function Round.Start() --This runs at the stadrt of deach roundffdd
+	SetGlobalInt("TimeTotal", Round.DefaultTime)
 	-- Round End
 	game.CleanUpMap()
 	-- Round Start
@@ -116,7 +124,7 @@ function Round.Start() --This runs at the stadrt of deach roundffdd
 		Round.Shrek:Freeze(true)
 	end)
 
-	song = math.random (0,5) --calls random int between 0 and 5 inclusive.
+	song = math.random (0,20) --calls random int between 0 and 5 inclusive.
 
 	if song == 0 then
 		Round.Shrek:EmitSound("bonus") --play secret song
@@ -138,9 +146,13 @@ end
 hook.Add( "PlayerSay", "Glitched", function( ply, text, public )
 	text = string.lower( text ) -- Make the chat message entirely lowercase
 	if ( text == "!unstuck" or text =="!stuck" or text =="!unglitch" ) then
-		ply:ChatPrint("You will be spawned in 1 second!")
-		timer.Simple( 1, function()
-			ply:Spawn()
-		end)
+		if !ply.Raping then
+			ply:ChatPrint("You will be spawned in 1 second!")
+			timer.Simple( 1, function()
+				ply:Spawn()
+			end)
+		else
+			ply:ChatPrint("You cant move whilst being raped!")
+		end
 	end
 end )
