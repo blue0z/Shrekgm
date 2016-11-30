@@ -188,6 +188,7 @@ hook.Add( "HUDPaint", "HUDPaint_Timer", function()
 	local TimeTotal = GetGlobalInt( "TimeTotal", 0 )
 	local RunnersRemain = GetGlobalInt( "RunnersRemain", 0 )
 	local Shrek = GetGlobalString( "ShrekName", "no shirk" )
+	local plyTeam = LocalPlayer():Team()
 	local cin = (math.sin(CurTime()) + 1) / 2
 
 	local time = TimeTotal - TimeLeft
@@ -225,8 +226,25 @@ hook.Add( "HUDPaint", "HUDPaint_Timer", function()
 	end
 	draw.SimpleText(RunnersRemain..rest, "DermaLarge", ScrW()/2, 65, clr, TEXT_ALIGN_CENTER)
 
-	draw.SimpleText("Shrek: "..Shrek, "DermaLarge", 5, 5, Color(255, 255, 255, 255))
+	TeamInfo = "You smell!"
+	if plyTeam == 1 then
+		TeamInfo = "You are SHREK!"
+	elseif plyTeam == 2 then
+		TeamInfo = "You are a SPECTATOR!"
+	else
+		TeamInfo = "You are a HIDER!"
+	end
+
+
+	draw.SimpleText(TeamInfo, "DermaLarge", 5, 5, Color(255, 255, 255, 255))
+
 	draw.SimpleText("If you get stuck/glitched or Shrek dies, run !unstuck.", "Trebuchet24", 5, ScrH()-28, Color(255, 255, 255, 255))
+
+	surface.SetFont( "Trebuchet24" )
+	local message = "#1 Shrek Chase Server!"
+	local width, height = surface.GetTextSize( message )
+
+	draw.SimpleText(message, "Trebuchet24", ScrW()-width-5, ScrH()-28, Color(255, 255, 255, 255))
 end )
 
 local hide = {

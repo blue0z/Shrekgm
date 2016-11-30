@@ -256,9 +256,11 @@ concommand.Add( SWEP.PRIMARYPW, function( ply, cmd, args )
 			plyAttacker:SetPos( plyAttackerPos )
 			plyAttacker.Raping = false
 			--timer.Simple( 0.1, function() plyAttacker:Give( "weapon_rapes" ) end )
+			plyAttacker:PS2_AddStandardPoints(10, "Shrekt", "You shreked someone!")
 		end
 		if plyVictim and plyVictim:IsValid() then
 			if VictimType == 1 then
+				plyVictim:PS2_AddStandardPoints(1, "Victimised", "You got shrekt!")
 				plyVictim:Kill()
 				plyVictim.Raping = false
 			elseif VictimType == 2 then

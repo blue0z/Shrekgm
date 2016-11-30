@@ -7,6 +7,9 @@ include( "player.lua" )
 resource.AddWorkshop( "314261589" ) -- Shrek Model
 resource.AddWorkshop( "104910430" ) -- Rape Swep
 resource.AddWorkshop( "795585981" ) -- All other content
+resource.AddWorkshop( "157420728" ) -- Waterworld
+resource.AddWorkshop( "400754706" ) -- Musuem
+
 sound.Add({
 	name = "smash",
 	sound = "smash.mp3"
@@ -22,14 +25,25 @@ sound.Add({
 	sound = "swamp.mp3"
 })
 
+sound.Add({
+	name = "russia",
+	sound = "russia.mp3"
+})
+
 function GM:PlayerInitialSpawn( ply )
-	ply:SetTeam(0)--Set Team to Players
+	ply:SetTeam(2)--Set Team to Spectators
+	if #player.GetAll() < 3 then
+		Round.Start()
+	end
 end
 
 function GM:PlayerDeath( ply )
-	if ply:Team() == 0 then
+	if ply:Team() == 3 then
 		ply:SetTeam(2) --Set Team to Spectators
-		if 0 >= #team.GetPlayers( 0 ) then --If all the runners are dead. End the round!
+		if 0 >= #team.GetPlayers( 3 ) then --If all the runners are dead. End the round!
+			for k,v in pairs(team.GetPlayers(1)) do
+				v:PS2_AddStandardPoints(20, "Rekkor", "You got em out of your swamp!!")
+			end
 			return Round.Start()
 		end
 
@@ -44,7 +58,7 @@ function GM:PlayerDeathThink( ply )
 end
 
 function GM:PlayerDisconnected( ply)
-	if ply == Round.Shrek then
+	if ply:Team() == 1 then
 		Round.Start()
 	end
 end
@@ -53,13 +67,14 @@ function GM:PlayerSpawn( ply )
 	ply:AllowFlashlight(false)
 	if ply:Team() == 2 then --If spectator
 		ply:Spectate(6) --Make them spectate
-	elseif ply:Team() == 0 then
+	elseif ply:Team() == 3 then
 		ply:AllowFlashlight(true)
 		ply:UnSpectate() -- As soon as the person joins the team, hde get's Un-spectated
 		ply:SetModel("models/player/group01/male_07.mdl") -- Setting the Hider's PM
 		ply:SetPlayerColor( Vector(0.22, 0.5, 0.10) )
 		ply:Give ("weapon_taunt") -- Equip the player with a hider's gunddddddds
 	elseif ply:Team() == 1 then
+		ply:AllowFlashlight(true)
 		ply:UnSpectate() -- As soon as the person joins the team, he get's Un-spectated
 		ply:SetModel("models/player/pyroteknik/shrek.mdl") -- Setting Shrek's PM
 		ply:SetPlayerColor( Vector(0.22, 0.5, 0.10) )
@@ -73,19 +88,21 @@ Round.DefaultTime = 180
 Round.CurrentTime = 0
 Round.ShrekCount = 1
 Round.ShrekRelease = 174
-Round.TimePerVictim = 30
+Round.TimePerVictim = 20
 
 SetGlobalInt("TimeLeft", Round.CurrentTime)
 SetGlobalInt("TimeTotal", Round.DefaultTime)
 function Round.Handle() --This function runs every second
 	Round.CurrentTime = Round.CurrentTime - 1
 	SetGlobalInt("TimeLeft", Round.CurrentTime)
-	SetGlobalInt("RunnersRemain", #team.GetPlayers( 0 ))
+	SetGlobalInt("RunnersRemain", #team.GetPlayers( 3 ))
 
 	if Round.CurrentTime <= 0 and #player.GetAll() > 0 then --If its ended
 		Round.Start() --Start the next round
 	elseif Round.CurrentTime == Round.ShrekRelease then
-		Round.Shrek:Freeze(false)
+		for k,v in pairs(team.GetPlayers(1)) do
+			v:Freeze(false)
+		end
 	else --Else do any stuff we want to run each second during gameplay. xd
 		for k, v in pairs( player.GetAll() ) do
 			--v:ChatPrint("Round Time Remaining: "..Round.CurrentTime)
@@ -96,24 +113,31 @@ end
 
 function Round.Start() --This runs at the stadrt of deach roundffdd
 	SetGlobalInt("TimeTotal", Round.DefaultTime)
-	-- Round End
+	for k,v in pairs(team.GetPlayers( 3 )) do
+		v:PS2_AddStandardPoints(50, "Survivor", "You protected your anus!")
+	end
+
+	for k, v in pairs( player.GetAll() ) do
+		v:SetTeam(3) --Spawn them as a runner
+	end
+
 	game.CleanUpMap()
 	-- Round Start
 	Round.CurrentTime = Round.DefaultTime
 	SetGlobalInt("TimeLeft", Round.CurrentTime)
 
-	Round.Shrek = table.Random(player.GetAll()) --Pick shrek
-	Round.Shrek:SetTeam(1) --Make random player shrek
-	SetGlobalString("ShrekName", Round.Shrek:Nick())
-	for k, v in pairs( player.GetAll() ) do
-		v:ChatPrint("The new shrek is: "..Round.Shrek:Nick())
+	ShrekCount = math.Clamp(math.floor(#player.GetAll()/5), 1, 100)
+	print("shrek"..ShrekCount)
+	while (true) do
+		if ShrekCount == 0 then
+			break
+		end
+	  local ChosenPly = table.Random(team.GetPlayers( 3 ))
+		ChosenPly:SetTeam(1)
+		ShrekCount = ShrekCount - 1
 	end
 
-	for k, v in pairs( player.GetAll() ) do
-		if v != Round.Shrek then
-			v:SetTeam(0) --Spawn them as a runner
-		end
-	end
+	SetGlobalString("ShrekName", "Somepeople")
 
 	for k, v in pairs( player.GetAll() ) do
 		v:KillSilent()
@@ -121,17 +145,31 @@ function Round.Start() --This runs at the stadrt of deach roundffdd
 		v:StopSound("bonus")
 	end
 	timer.Simple( 0.1, function()
-		Round.Shrek:Freeze(true)
+		for k,v in pairs(team.GetPlayers( 1 )) do
+			v:Freeze(true)
+		end
 	end)
 
-	song = math.random (0,20) --calls random int between 0 and 5 inclusive.
+	timer.Simple( 0.5, function()
+		print('handling song')
+		song = math.random (0,10) --calls random int between 0 and 5 inclusive.
 
-	if song == 0 then
-		Round.Shrek:EmitSound("bonus") --play secret song
 
-	else
-		Round.Shrek:EmitSound("smash") --play default song
-	end
+		if song == 0 then
+			for k,v in pairs(team.GetPlayers( 1 )) do
+				v:EmitSound("bonus") --play default song
+			end
+		elseif song == 1 then
+			for k,v in pairs(team.GetPlayers( 1 )) do
+				v:EmitSound("russia") --play default song
+			end
+		else
+			for k,v in pairs(team.GetPlayers( 1 )) do
+				v:EmitSound("smash") --play default song
+			end
+		end
+	end)
+
 end
 
 timer.Create("Round.Handle", 1, 0, Round.Handle)
@@ -154,5 +192,12 @@ hook.Add( "PlayerSay", "Glitched", function( ply, text, public )
 		else
 			ply:ChatPrint("You cant move whilst being raped!")
 		end
+	end
+end )
+
+hook.Add( "PlayerSay", "Glitched", function( ply, text, public )
+	text = string.lower( text ) -- Make the chat message entirely lowercase
+	if ( text == "!discord") then
+		ply:SendLua('gui.OpenURL("https://discord.gg/ErtAtt8")')
 	end
 end )
